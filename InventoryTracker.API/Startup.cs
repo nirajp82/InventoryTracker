@@ -1,44 +1,56 @@
+using FluentValidation.AspNetCore;
+using InventoryTracker.Application;
+using InventoryTracker.Infrastructure;
+using InventoryTracker.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace InventoryTracker.API
 {
     public class Startup
     {
+        #region Members
+        private readonly IConfiguration _configuration;
+        #endregion
+
+
+        #region Constructor
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
+        #endregion
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        #region Public Methods
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.ConfigureInfrastructureServices();
+            services.ConfigureApplicationServices();
+
+            services.AddControllers()
+            .AddFluentValidation(cfg =>
+            {
+                cfg.RegisterValidatorsFromAssemblyContaining<Search>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseHttpsRedirection();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseRouting();
-
-            app.UseAuthorization();
+            app.ConfigureSwaggerMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-        }
+        } 
+        #endregion
     }
 }

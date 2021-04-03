@@ -6,11 +6,20 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
     {
         #region Private Members
         IItemRepo _itemRepo;
+        private readonly IDateTimeService _dateTimeService;
         #endregion
 
 
         #region Public Members
-        public IItemRepo ItemRepo => _itemRepo ??= new ItemRepo();
+        public IItemRepo ItemRepo => _itemRepo ??= new ItemRepo(_dateTimeService);
+        #endregion
+
+
+        #region Constructor
+        public UnitOfWork(IDateTimeService dateTimeService)
+        {
+            _dateTimeService = dateTimeService;
+        }
         #endregion
 
 

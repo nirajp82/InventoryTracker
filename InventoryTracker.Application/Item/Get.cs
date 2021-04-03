@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
-using InventoryTracker.Domain;
 using InventoryTracker.Infrastructure.Persistence;
 using MediatR;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +11,10 @@ namespace InventoryTracker.Application
         public class Query : IRequest<Dto.Item>
         {
             public string Name { get; set; }
+            public Query(string name)
+            {
+                Name = name;
+            }
         }
 
         public class CommandValidator : AbstractValidator<Query>

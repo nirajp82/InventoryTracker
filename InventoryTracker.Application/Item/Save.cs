@@ -24,7 +24,6 @@ namespace InventoryTracker.Application
         {
             public CommandValidator()
             {
-                RuleFor(c => c.Name).MaximumLength(50).NotEmpty();
                 RuleFor(c => c.Quantity).GreaterThanOrEqualTo(0);
             }
         }

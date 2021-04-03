@@ -1,9 +1,7 @@
 ﻿using FluentValidation;
-using InventoryTracker.Domain;
 using InventoryTracker.Dto;
 using InventoryTracker.Infrastructure.Persistence;
 using MediatR;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 

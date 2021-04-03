@@ -1,17 +1,14 @@
 ﻿using InventoryTracker.Infrastructure.Persistence;
-using InventoryTracker.Infrastructure.Persistence.Mock;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace InventoryTracker.Application
 {
     public static class ServiceExtensions
     {
         #region Extension Method
-        public static void ConfigureRepoServices(this IServiceCollection services)
+        public static void ConfigureApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IMapperHelper, MapperHelper>();
             services.ConfigurePersistenceServices();

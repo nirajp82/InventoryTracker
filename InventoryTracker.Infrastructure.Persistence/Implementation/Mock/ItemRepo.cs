@@ -1,8 +1,6 @@
 ﻿using InventoryTracker.Domain;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace InventoryTracker.Infrastructure.Persistence.Mock
 {
@@ -19,6 +17,8 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
         public void Delete(string name) => Delete(e => e.Name == name);
 
         public Item Find(string name) => FindFirst(e => e.Name == name);
+
+        public IEnumerable<Item> GetAll() => base.Find(null);
 
         public void Save(Item item)
         {

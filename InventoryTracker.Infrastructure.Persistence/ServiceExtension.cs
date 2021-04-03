@@ -1,8 +1,5 @@
 ﻿using InventoryTracker.Infrastructure.Persistence.Mock;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace InventoryTracker.Infrastructure.Persistence
 {

@@ -1,15 +1,13 @@
 ﻿using FluentValidation;
 using InventoryTracker.Infrastructure.Persistence;
 using MediatR;
-using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace InventoryTracker.Application
 {
-    class SaveList
+    public class SaveList
     {
         public class Command : IRequest
         {
@@ -24,7 +22,7 @@ namespace InventoryTracker.Application
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Unit>
         {
             #region Members
             private readonly IMapperHelper _mapperHelper;
@@ -44,8 +42,8 @@ namespace InventoryTracker.Application
             #region Public Methods
             public Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                IEnumerable<Domain.Item> items = _mapperHelper.MapList<Save.Command, Domain.Item>(request.List);
-                _unitOfWork.ItemRepo.Save(items);
+                IEnumerable<Domain.Item> list = _mapperHelper.MapList<Save.Command, Domain.Item>(request.List);
+                _unitOfWork.ItemRepo.Save(list);
                 _unitOfWork.Commit();
                 return Task.FromResult(Unit.Value);
             }

@@ -4,5 +4,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InventoryTracker.Application\InventoryTracker.Application.csproj" />
+    <ProjectReference Include="..\InventoryTracker.Dto\InventoryTracker.Dto.csproj" />
+    <ProjectReference Include="..\InventoryTracker.Infrastructure\InventoryTracker.Infrastructure.csproj" />
+  </ItemGroup>
+
 
 </Project>

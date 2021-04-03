@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
 
 namespace InventoryTracker.Infrastructure.Persistence.Mock
 {
@@ -59,16 +58,28 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
 
         public IEnumerable<TDomain> Find(Expression<Func<TDomain, bool>> predicate)
         {
-            return _tempRepo.Where(predicate.Compile());
+            if (predicate != null)
+                return _tempRepo.Where(predicate.Compile());
+
+            return _tempRepo;
         }
 
-        public IEnumerable<TDomain> Find(Expression<Func<TDomain, bool>> predicate, int offset, int limit,
-            string orderByProperty, bool orderByDesc = false)
+        public IEnumerable<TDomain> Find(Expression<Func<TDomain, bool>> predicate, int? offset = null, int? limit = null,
+            string orderByProperty = null, bool orderByDesc = false)
         {
             var result = Find(predicate);
             if (!string.IsNullOrWhiteSpace(orderByProperty))
                 result = result.OrderBy(orderByProperty, orderByDesc);
-            return result.Skip(offset).Take(limit);
+            if (offset.HasValue)
+                result = result.Skip(offset.Value);
+            if (limit.HasValue)
+                result = result.Take(limit.Value);
+            return result;
+        }
+
+        public int Count(Expression<Func<TDomain, bool>> predicate)
+        {
+            return Find(predicate).Count();
         }
 
         public bool HasAny(Expression<Func<TDomain, bool>> predicate)
@@ -120,8 +131,8 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
                 if (_finalRepo.Any(e => e.UniqueIdentifier != item.UniqueIdentifier))
                     errors.Add($"{item.UniqueIdentifier} has been modified/delete by other user");
             }
-
-            throw new ValidationException(string.Join(",", errors));
+            if (errors.Any())
+                throw new ValidationException(string.Join(",", errors));
         }
 
         private void UpdateDefaultValue()
@@ -134,7 +145,7 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
 
             foreach (var item in _updatedEntitiesRepo)
                 item.Version = Guid.NewGuid();
-        }        
+        }
         #endregion
     }
 }
