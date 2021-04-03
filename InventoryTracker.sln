@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryTracker.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryTracker.Domain", "InventoryTracker.Domain\InventoryTracker.Domain.csproj", "{2F6565E6-E8DE-4F25-BF03-7839CCA0D415}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryTracker.Dto", "InventoryTracker.Dto\InventoryTracker.Dto.csproj", "{432D77BD-A10D-4184-8DE1-CD76E36553DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2F6565E6-E8DE-4F25-BF03-7839CCA0D415}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F6565E6-E8DE-4F25-BF03-7839CCA0D415}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F6565E6-E8DE-4F25-BF03-7839CCA0D415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{432D77BD-A10D-4184-8DE1-CD76E36553DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{432D77BD-A10D-4184-8DE1-CD76E36553DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{432D77BD-A10D-4184-8DE1-CD76E36553DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{432D77BD-A10D-4184-8DE1-CD76E36553DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

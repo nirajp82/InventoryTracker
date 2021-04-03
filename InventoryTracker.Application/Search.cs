@@ -1,6 +1,6 @@
 ﻿namespace InventoryTracker.Application
 {
-    public class List
+    public class Search
     {
     }
 }

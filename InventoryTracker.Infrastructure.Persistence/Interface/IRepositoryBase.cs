@@ -10,11 +10,14 @@ namespace InventoryTracker.Infrastructure.Persistence
     {
         void Add(TDomain entity);
 
-        void Delete(Expression<Func<TDomain, bool>> predicate, CancellationToken cancellationToken = default);
+        void Delete(Expression<Func<TDomain, bool>> predicate);
 
         IEnumerable<TDomain> Find(Expression<Func<TDomain, bool>> predicate);
 
-        bool HasAny(Expression<Func<TDomain, bool>> predicate, CancellationToken cancellationToken = default);
+        IEnumerable<TDomain> Find(Expression<Func<TDomain, bool>> predicate, int offset, 
+            int limit, string orderByProperty, bool orderByDesc = false);
+
+        bool HasAny(Expression<Func<TDomain, bool>> predicate);
 
         void Update(TDomain entity);
     }

@@ -40,7 +40,7 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
             _createdEntitiesRepo.Add(entity);
         }
 
-        public void Delete(Expression<Func<TDomain, bool>> predicate, CancellationToken cancellationToken = default)
+        public void Delete(Expression<Func<TDomain, bool>> predicate)
         {
             _tempRepo = Find(predicate).ToList();
             foreach (var item in _finalRepo)
@@ -55,7 +55,16 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
             return _tempRepo.Where(predicate.Compile());
         }
 
-        public bool HasAny(Expression<Func<TDomain, bool>> predicate, CancellationToken cancellationToken = default)
+        public IEnumerable<TDomain> Find(Expression<Func<TDomain, bool>> predicate, int offset, int limit,
+            string orderByProperty, bool orderByDesc = false)
+        {
+            var result = Find(predicate);
+            if (!string.IsNullOrWhiteSpace(orderByProperty))
+                result = result.OrderBy(orderByProperty, orderByDesc);
+            return result.Skip(offset).Take(limit);
+        }
+
+        public bool HasAny(Expression<Func<TDomain, bool>> predicate)
         {
             return _tempRepo.Where(predicate.Compile()).Any();
         }
