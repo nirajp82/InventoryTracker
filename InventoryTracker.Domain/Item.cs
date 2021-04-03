@@ -2,7 +2,7 @@
 
 namespace InventoryTracker.Domain
 {
-    public class Item : IBaseDomain, IUniqueIdentifier
+    public class Item : IBaseDomain
     {
         public string Name { get; set; }
         public int Quantity { get; set; }

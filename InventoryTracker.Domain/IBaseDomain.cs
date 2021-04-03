@@ -2,8 +2,9 @@
 
 namespace InventoryTracker.Domain
 {
-    public interface IBaseDomain : IUniqueIdentifier
+    public interface IBaseDomain
     {
+        public string UniqueIdentifier { get; }
         public DateTime CreatedOn { get; set; }
         public Guid Version { get; set; }
     }

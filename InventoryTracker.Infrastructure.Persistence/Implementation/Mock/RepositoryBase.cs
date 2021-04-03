@@ -18,17 +18,19 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
         readonly ICollection<TDomain> _createdEntitiesRepo;
         readonly List<TDomain> _deletedEntitiesRepo;
         readonly ICollection<TDomain> _updatedEntitiesRepo = new List<TDomain>();
+        readonly IDateTimeService _dateTimeService;
         #endregion
 
 
         #region Constructor
-        public RepositoryBase()
+        public RepositoryBase(IDateTimeService dateTimeService)
         {
             _tempRepo = _finalRepo.ToList();
 
             _createdEntitiesRepo = new List<TDomain>();
             _updatedEntitiesRepo = new List<TDomain>();
             _deletedEntitiesRepo = new List<TDomain>();
+            _dateTimeService = dateTimeService;
         }
         #endregion
 
@@ -48,6 +50,11 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
                 if (_tempRepo?.Any(e => e.UniqueIdentifier == item.UniqueIdentifier) == true)
                     _deletedEntitiesRepo.Add(item);
             }
+        }
+
+        public TDomain FindFirst(Expression<Func<TDomain, bool>> predicate)
+        {
+            return _tempRepo.Where(predicate.Compile()).FirstOrDefault();
         }
 
         public IEnumerable<TDomain> Find(Expression<Func<TDomain, bool>> predicate)
@@ -121,13 +128,13 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
         {
             foreach (var item in _createdEntitiesRepo)
             {
-                item.CreatedOn = DateTime.Now;
+                item.CreatedOn = _dateTimeService.Current;
                 item.Version = Guid.NewGuid();
             }
 
             foreach (var item in _updatedEntitiesRepo)
                 item.Version = Guid.NewGuid();
-        }
+        }        
         #endregion
     }
 }

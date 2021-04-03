@@ -12,6 +12,8 @@ namespace InventoryTracker.Infrastructure.Persistence
 
         void Delete(Expression<Func<TDomain, bool>> predicate);
 
+        TDomain FindFirst(Expression<Func<TDomain, bool>> predicate);
+
         IEnumerable<TDomain> Find(Expression<Func<TDomain, bool>> predicate);
 
         IEnumerable<TDomain> Find(Expression<Func<TDomain, bool>> predicate, int offset, 
