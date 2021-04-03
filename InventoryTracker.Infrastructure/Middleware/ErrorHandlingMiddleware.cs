@@ -35,6 +35,11 @@ namespace InventoryTracker.Infrastructure.Middleware
             {
                 await _next(httpContext);
             }
+            catch (CustomException cex)
+            {
+                object errors = cex.Errors;
+                await HandleException(cex, httpContext, errors, (int)cex.StatusCode);
+            }
             catch (ValidationException vex)
             {
                 object errors = vex.Message;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace InventoryTracker.Infrastructure.Persistence.Mock
 {
@@ -24,7 +25,8 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
         #region Constructor
         public RepositoryBase(IDateTimeService dateTimeService)
         {
-            _tempRepo = _finalRepo.ToList();
+            //Create snapshot of current repository using deep copy
+            _tempRepo = JsonSerializer.Deserialize<List<TDomain>>(JsonSerializer.Serialize(_finalRepo.ToList()));
 
             _createdEntitiesRepo = new List<TDomain>();
             _updatedEntitiesRepo = new List<TDomain>();
@@ -45,10 +47,12 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
         {
             var deleteList = Find(predicate).ToList();
 
-            foreach (var item in deleteList)
-                _deletedEntitiesRepo.Add(item);
+            foreach (var entity in deleteList)
+                _deletedEntitiesRepo.Add(entity);
 
-            _tempRepo.ToList().RemoveAll(e => deleteList.Contains(e));
+            var list = _tempRepo.ToList();
+            list.RemoveAll(e => deleteList.Contains(e));
+            _tempRepo = list;
         }
 
         public TDomain FindFirst(Expression<Func<TDomain, bool>> predicate)
@@ -89,7 +93,7 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
 
         public void Update(TDomain entity)
         {
-            TDomain domain = _tempRepo.First(e => e.UniqueIdentifier == entity.UniqueIdentifier);
+            TDomain domain = _tempRepo.First(e => string.Compare(e.UniqueIdentifier, entity.UniqueIdentifier, true) == 0);
             HelperFunc.CopyProps(entity, domain);
             _updatedEntitiesRepo.Add(domain);
         }
@@ -113,23 +117,23 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
         {
             ICollection<string> errors = new List<string>();
 
-            //Make sure item does not exists in the final list
-            foreach (var item in _createdEntitiesRepo)
+            //Make sure entity does not exists in the final list
+            foreach (var entity in _createdEntitiesRepo)
             {
-                if (_finalRepo.Any(e => e.UniqueIdentifier == item.UniqueIdentifier))
-                    errors.Add($"{item.UniqueIdentifier} is added by other user");
+                if (_finalRepo.Any(e => string.Compare(e.UniqueIdentifier, entity.UniqueIdentifier, true) == 0))
+                    errors.Add($"{entity.UniqueIdentifier} is added by other user");
             }
 
-            foreach (var item in _updatedEntitiesRepo)
+            foreach (var entity in _updatedEntitiesRepo)
             {
-                if (_finalRepo.Any(e => e.Version != item.Version))
-                    errors.Add($"Data for {item.UniqueIdentifier} has been modified by other user!");
+                if (_finalRepo.Any(e => string.Compare(e.UniqueIdentifier, entity.UniqueIdentifier, true) == 0 && e.Version != entity.Version))
+                    errors.Add($"Data for {entity.UniqueIdentifier} has been modified by other user!");
             }
 
-            foreach (var item in _deletedEntitiesRepo)
+            foreach (var entity in _deletedEntitiesRepo)
             {
-                if (_finalRepo.Any(e => e.UniqueIdentifier != item.UniqueIdentifier))
-                    errors.Add($"{item.UniqueIdentifier} has been modified/delete by other user");
+                if (_finalRepo.Any(e => string.Compare(e.UniqueIdentifier, entity.UniqueIdentifier, true) == 0 && e.Version != entity.Version))
+                    errors.Add($"{entity.UniqueIdentifier} has been modified/delete by other user");
             }
             if (errors.Any())
                 throw new ValidationException(string.Join(", ", errors));
@@ -137,14 +141,14 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
 
         private void UpdateDefaultValue()
         {
-            foreach (var item in _createdEntitiesRepo)
+            foreach (var entity in _createdEntitiesRepo)
             {
-                item.CreatedOn = _dateTimeService.Current;
-                item.Version = Guid.NewGuid();
+                entity.CreatedOn = _dateTimeService.Current;
+                entity.Version = Guid.NewGuid();
             }
 
-            foreach (var item in _updatedEntitiesRepo)
-                item.Version = Guid.NewGuid();
+            foreach (var entity in _updatedEntitiesRepo)
+                entity.Version = Guid.NewGuid();
         }
         #endregion
     }
