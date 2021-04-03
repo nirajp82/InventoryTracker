@@ -34,7 +34,8 @@ namespace InventoryTracker.API
             services.AddControllers()
             .AddFluentValidation(cfg =>
             {
-                cfg.RegisterValidatorsFromAssemblyContaining<Search>();
+                cfg.RegisterValidatorsFromAssemblyContaining<SaveList>();
+                cfg.RegisterValidatorsFromAssemblyContaining<Dto.BaseItem>();
             });
         }
 

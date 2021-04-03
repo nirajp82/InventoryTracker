@@ -43,12 +43,12 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
 
         public void Delete(Expression<Func<TDomain, bool>> predicate)
         {
-            _tempRepo = Find(predicate).ToList();
-            foreach (var item in _finalRepo)
-            {
-                if (_tempRepo?.Any(e => e.UniqueIdentifier == item.UniqueIdentifier) == true)
-                    _deletedEntitiesRepo.Add(item);
-            }
+            var deleteList = Find(predicate).ToList();
+
+            foreach (var item in deleteList)
+                _deletedEntitiesRepo.Add(item);
+
+            _tempRepo.ToList().RemoveAll(e => deleteList.Contains(e));
         }
 
         public TDomain FindFirst(Expression<Func<TDomain, bool>> predicate)
@@ -90,7 +90,7 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
         public void Update(TDomain entity)
         {
             TDomain domain = _tempRepo.First(e => e.UniqueIdentifier == entity.UniqueIdentifier);
-            domain = entity;
+            HelperFunc.CopyProps(entity, domain);
             _updatedEntitiesRepo.Add(domain);
         }
 
@@ -132,7 +132,7 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
                     errors.Add($"{item.UniqueIdentifier} has been modified/delete by other user");
             }
             if (errors.Any())
-                throw new ValidationException(string.Join(",", errors));
+                throw new ValidationException(string.Join(", ", errors));
         }
 
         private void UpdateDefaultValue()

@@ -14,7 +14,7 @@ namespace InventoryTracker.API.Controllers
         #region Get Action Methods
         [HttpGet("{name:minlength(1):maxlength(50)}")]
         [ProducesResponseType(typeof(Item), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(string name, CancellationToken cancellationToken)
         {
@@ -22,7 +22,7 @@ namespace InventoryTracker.API.Controllers
             if (result != null)
                 return Ok(result);
             else
-                return NoContent();
+                return NotFound();
         }
 
         [HttpGet]
@@ -42,14 +42,15 @@ namespace InventoryTracker.API.Controllers
 
         #region Command Action Methods
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] SaveList.Command request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post([FromBody] IEnumerable<SaveList.Command.Item> list, CancellationToken cancellationToken)
         {
-            await Mediator.Send(request, cancellationToken);
-            return NoContent();
+            var response = await Mediator.Send(new SaveList.Command { List = list }, cancellationToken);
+            return Ok(response);
         }
+
 
         [HttpPut("{name:minlength(1):maxlength(50)}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]

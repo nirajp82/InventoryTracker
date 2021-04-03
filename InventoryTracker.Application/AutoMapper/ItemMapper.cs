@@ -9,6 +9,7 @@ namespace InventoryTracker.Application
         {
             Map<string, string>().ConvertUsing(str => string.IsNullOrWhiteSpace(str) ? str : str.Trim());
             Map<Save.Command, Domain.Item>();
+            Map<SaveList.Command.Item, Domain.Item>();
             Map<Domain.Item, Dto.Item>();
         }
         #endregion

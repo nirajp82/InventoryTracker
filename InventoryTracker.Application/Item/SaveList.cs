@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using InventoryTracker.Infrastructure.Persistence;
 using MediatR;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,9 +11,14 @@ namespace InventoryTracker.Application
 {
     public class SaveList
     {
-        public class Command : IRequest
+        public class Command : IRequest<object>
         {
-            public IEnumerable<Save.Command> List { get; set; }
+            public class Item : Dto.BaseItem
+            {
+                public Guid? Version { get; set; }
+            }
+
+            public IEnumerable<Item> List { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -19,10 +26,15 @@ namespace InventoryTracker.Application
             public CommandValidator()
             {
                 RuleFor(c => c.List).NotNull().NotEmpty();
+                RuleForEach(c => c.List).ChildRules(item =>
+                {
+                    item.RuleFor(item => item.Name).MaximumLength(50).NotEmpty();
+                    item.RuleFor(item => item.Quantity).GreaterThanOrEqualTo(0);
+                });
             }
         }
 
-        public class Handler : IRequestHandler<Command, Unit>
+        public class Handler : IRequestHandler<Command, object>
         {
             #region Members
             private readonly IMapperHelper _mapperHelper;
@@ -40,12 +52,17 @@ namespace InventoryTracker.Application
 
 
             #region Public Methods
-            public Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public Task<object> Handle(Command command, CancellationToken cancellationToken)
             {
-                IEnumerable<Domain.Item> list = _mapperHelper.MapList<Save.Command, Domain.Item>(request.List);
+                IEnumerable<Domain.Item> list = _mapperHelper.MapList<SaveList.Command.Item, Domain.Item>(command.List);
                 _unitOfWork.ItemRepo.Save(list);
                 _unitOfWork.Commit();
-                return Task.FromResult(Unit.Value);
+                object response = new
+                {
+                    Inserted = command.List.Where(c => c.Version == default).Count(),
+                    Updated = command.List.Where(c => c.Version != default).Count()
+                };
+                return Task.FromResult(response);
             }
             #endregion
         }

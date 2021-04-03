@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using InventoryTracker.Dto;
 using InventoryTracker.Infrastructure.Persistence;
 using MediatR;
 using System;
@@ -10,12 +11,10 @@ namespace InventoryTracker.Application
 {
     public class Save
     {
-        public class Command : IRequest
+        public class Command : BaseItem, IRequest
         {
             [JsonIgnore]
-            public string Name { get; set; }
-
-            public int Quantity { get; set; }
+            public override string Name { get; set; }
 
             public Guid? Version { get; set; }
         }

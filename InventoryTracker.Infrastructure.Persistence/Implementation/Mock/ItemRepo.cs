@@ -14,9 +14,9 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
 
 
         #region Methods
-        public void Delete(string name) => Delete(e => e.Name == name);
+        public void Delete(string name) => Delete(e => string.Compare(e.Name, name, true) == 0);
 
-        public Item Find(string name) => FindFirst(e => e.Name == name);
+        public Item Find(string name) => FindFirst(e => string.Compare(e.Name, name, true) == 0);
 
         public IEnumerable<Item> GetAll() => base.Find(null);
 

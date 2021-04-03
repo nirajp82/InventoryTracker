@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -33,6 +35,11 @@ namespace InventoryTracker.Infrastructure.Middleware
             {
                 await _next(httpContext);
             }
+            catch (ValidationException vex)
+            {
+                object errors = vex.Message;
+                await HandleException(vex, httpContext, errors, (int)HttpStatusCode.BadRequest);
+            }
             catch (Exception ex)
             {
                 object errors = !string.IsNullOrWhiteSpace(ex.Message) ? ex.Message : "Oops, something went wrong";
@@ -51,7 +58,16 @@ namespace InventoryTracker.Infrastructure.Middleware
             if (errors != null)
             {
                 string errorBody = JsonSerializer.Serialize(new { errors });
-                await httpContext.Response.WriteAsync(errorBody);
+                httpContext.Response.ContentType = "application/problem+json";
+                var problem = new ProblemDetails
+                {
+                    Status = statusCode,
+                    Detail = errorBody
+                };
+
+                //Serialize the problem details object to the Response as JSON (using System.Text.Json)
+                var stream = httpContext.Response.Body;
+                await JsonSerializer.SerializeAsync(stream, problem);
             }
         }
 

@@ -2,6 +2,9 @@
 using InventoryTracker.Dto;
 using InventoryTracker.Infrastructure.Persistence;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,9 +52,20 @@ namespace InventoryTracker.Application
             #region Methods
             public Task<ResponseEnvelope<Dto.Item>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return null;
-                //Domain.Item dbResponse = _unitOfWork.ItemRepo.Find()
-                //return Task.FromResult(_mapperHelper.Map<Domain.Item, Dto.Item>(dbResponse));
+                Expression<Func<Domain.Item, bool>> predicate = (item 
+                    => string.IsNullOrWhiteSpace(request.NameLike) || 
+                        item.Name.ToLower().Contains(request.NameLike));
+
+                IEnumerable<Domain.Item> dbResponse = _unitOfWork.ItemRepo.Find(predicate, request.Offset, request.Limit, request.OrderBy, request.OrderByDesc);
+                int count = _unitOfWork.ItemRepo.Count(null);
+                return Task.FromResult
+                (
+                    new ResponseEnvelope<Dto.Item>
+                    {
+                        Count = count,
+                        List = _mapperHelper.MapList<Domain.Item, Dto.Item>(dbResponse)
+                    }
+                );
             }
             #endregion
         }
