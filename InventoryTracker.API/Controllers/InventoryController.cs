@@ -64,7 +64,6 @@ namespace InventoryTracker.API.Controllers
             return Ok(response);
         }
 
-
         [HttpPut("{name:minlength(1):maxlength(50)}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

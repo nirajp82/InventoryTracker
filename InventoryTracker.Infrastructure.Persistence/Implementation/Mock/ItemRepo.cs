@@ -28,7 +28,7 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
                 Update(item);
         }
 
-        public void Save(IEnumerable<Item> list) => list.ToList().ForEach(Save);
+        public void Save(IEnumerable<Item> list) => list?.ToList().ForEach(Save);
         #endregion
     }
 }

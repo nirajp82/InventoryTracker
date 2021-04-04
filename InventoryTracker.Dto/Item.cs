@@ -11,6 +11,10 @@ namespace InventoryTracker.Dto
     public class Item : BaseItem
     {
         public DateTime CreatedOn { get; set; }
+
+        /// <summary>
+        /// Version number used to handle concurrency issue
+        /// </summary>
         public Guid Version { get; set; }
     }
 }

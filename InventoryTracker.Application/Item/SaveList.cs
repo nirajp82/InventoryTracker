@@ -21,7 +21,7 @@ namespace InventoryTracker.Application
             public IEnumerable<Item> List { get; set; }
         }
 
-        public class CommandValidator : AbstractValidator<IEnumerable<Command.Item>>
+        public class CommandValidator : AbstractValidator<List<Command.Item>>
         {
             public CommandValidator()
             {
