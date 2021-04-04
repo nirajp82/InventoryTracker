@@ -46,7 +46,7 @@ namespace InventoryTracker.Infrastructure
             appBuilder.UseSwagger();
             appBuilder.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint($"{_docName}/swagger.json", "RFP API");
+                c.SwaggerEndpoint($"{_docName}/swagger.json", "Inventory Tracker API");
             });
         }
         #endregion
