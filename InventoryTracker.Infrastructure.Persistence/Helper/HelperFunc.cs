@@ -16,7 +16,8 @@ namespace InventoryTracker.Infrastructure.Persistence
 
             foreach (PropertyInfo prop in src.GetType().GetProperties())
             {
-                if (prop.CanWrite && prop.GetCustomAttribute(typeof(CopyIgnoreAttribute)) == null &&
+                if (prop.CanWrite &&
+                    prop.GetCustomAttribute(typeof(CopyIgnoreAttribute)) == null &&
                     (prop.PropertyType.IsValueType || prop.PropertyType == typeof(string)))
                 {
                     object value = prop.GetValue(src);

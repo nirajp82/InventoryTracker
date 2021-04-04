@@ -11,6 +11,7 @@ namespace InventoryTracker.Infrastructure
             //Services Registration
             services.ConfigureSwaggerService();
             services.AddScoped<ValidateItemExistsFilter>();
+            services.AddScoped<ValidateItemSearch>();
         }
         #endregion        
     }

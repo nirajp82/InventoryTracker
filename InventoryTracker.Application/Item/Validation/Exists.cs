@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace InventoryTracker.Application
 {
+    /// <summary>
+    /// Check specified name is valid (exists in Reposiroty) before performing any action.
+    /// </summary>
     public class Exists
     {
         public class Query : IRequest<bool>

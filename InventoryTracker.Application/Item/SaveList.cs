@@ -21,12 +21,12 @@ namespace InventoryTracker.Application
             public IEnumerable<Item> List { get; set; }
         }
 
-        public class CommandValidator : AbstractValidator<Command>
+        public class CommandValidator : AbstractValidator<IEnumerable<Command.Item>>
         {
             public CommandValidator()
             {
-                RuleFor(c => c.List).NotNull().NotEmpty();
-                RuleForEach(c => c.List).ChildRules(item =>
+                RuleFor(c => c).NotNull().NotEmpty();
+                RuleForEach(c => c).ChildRules(item =>
                 {
                     item.RuleFor(item => item.Name).MaximumLength(50).NotEmpty();
                     item.RuleFor(item => item.Quantity).GreaterThanOrEqualTo(0);

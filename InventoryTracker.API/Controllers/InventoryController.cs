@@ -35,6 +35,21 @@ namespace InventoryTracker.API.Controllers
             else
                 return NoContent();
         }
+
+
+        [HttpGet("Search")]
+        [ProducesResponseType(typeof(IEnumerable<Item>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ServiceFilter(typeof(ValidateItemSearch))]
+        public async Task<IActionResult> Search([FromQuery]Search.Query query, CancellationToken cancellationToken)
+        {
+            var result = await Mediator.Send(query, cancellationToken);
+            if (result?.Count > 0)
+                return Ok(result);
+            else
+                return NoContent();
+        }
         #endregion
 
 

@@ -51,7 +51,7 @@ namespace InventoryTracker.Application
 
             #region Methods
             public Task<ResponseEnvelope<Dto.Item>> Handle(Query request, CancellationToken cancellationToken)
-            {
+            {                
                 Expression<Func<Domain.Item, bool>> predicate = (item 
                     => string.IsNullOrWhiteSpace(request.NameLike) || 
                         item.Name.ToLower().Contains(request.NameLike));
