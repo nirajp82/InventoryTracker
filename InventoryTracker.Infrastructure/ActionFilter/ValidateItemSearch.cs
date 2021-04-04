@@ -30,7 +30,7 @@ namespace InventoryTracker.Infrastructure
             if (context.ActionArguments[nameof(Search.Query)] is Search.Query searchQuery)
             {
                 //Check if record exists, Send Request Exists
-                if (await _mediator.Send(new ValidateSearch.Query { Offset = searchQuery.Offset, Limit = searchQuery.Limit, NameLike = searchQuery.NameLike }))
+                if (await _mediator.Send(new ValidateSearch.Query { Offset = searchQuery.Offset, NameLike = searchQuery.NameLike }))
                 {
                     await next();
                     return;

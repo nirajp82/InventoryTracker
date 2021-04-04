@@ -18,7 +18,6 @@ namespace InventoryTracker.Application
         {
             public string NameLike { get; set; }
             public int Offset { get; set; }
-            public int Limit { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Query>
@@ -27,7 +26,6 @@ namespace InventoryTracker.Application
             {
                 RuleFor(c => c.NameLike).MaximumLength(50);
                 RuleFor(c => c.Offset).GreaterThanOrEqualTo(0);
-                RuleFor(c => c.Limit).GreaterThanOrEqualTo(1);
             }
         }
 
