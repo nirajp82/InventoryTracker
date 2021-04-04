@@ -51,7 +51,7 @@ namespace InventoryTracker.Application
                 {
                     Expression<Func<Domain.Item, bool>> predicate = (item
                         => string.IsNullOrWhiteSpace(request.NameLike) ||
-                            item.Name.ToLower().Contains(request.NameLike));
+                            item.Name.ToLower().Contains(request.NameLike.ToLower()));
 
                     int count = _unitOfWork.ItemRepo.Count(predicate);
                     if (request.Offset > count)

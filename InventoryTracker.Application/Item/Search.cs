@@ -54,10 +54,10 @@ namespace InventoryTracker.Application
             {                
                 Expression<Func<Domain.Item, bool>> predicate = (item 
                     => string.IsNullOrWhiteSpace(request.NameLike) || 
-                        item.Name.ToLower().Contains(request.NameLike));
+                        item.Name.ToLower().Contains(request.NameLike.ToLower()));
 
                 IEnumerable<Domain.Item> dbResponse = _unitOfWork.ItemRepo.Find(predicate, request.Offset, request.Limit, request.OrderBy, request.OrderByDesc);
-                int count = _unitOfWork.ItemRepo.Count(null);
+                int count = _unitOfWork.ItemRepo.Count(predicate);
                 return Task.FromResult
                 (
                     new ResponseEnvelope<Dto.Item>

@@ -121,19 +121,19 @@ namespace InventoryTracker.Infrastructure.Persistence.Mock
             foreach (var entity in _createdEntitiesRepo)
             {
                 if (_finalRepo.Any(e => string.Compare(e.UniqueIdentifier, entity.UniqueIdentifier, true) == 0))
-                    errors.Add($"{entity.UniqueIdentifier} is added by other user");
+                    errors.Add($"Record for {entity.UniqueIdentifier} already exists!");
             }
 
             foreach (var entity in _updatedEntitiesRepo)
             {
                 if (_finalRepo.Any(e => string.Compare(e.UniqueIdentifier, entity.UniqueIdentifier, true) == 0 && e.Version != entity.Version))
-                    errors.Add($"Data for {entity.UniqueIdentifier} has been modified by other user!");
+                    errors.Add($"Record for {entity.UniqueIdentifier} has been modified!");
             }
 
             foreach (var entity in _deletedEntitiesRepo)
             {
                 if (_finalRepo.Any(e => string.Compare(e.UniqueIdentifier, entity.UniqueIdentifier, true) == 0 && e.Version != entity.Version))
-                    errors.Add($"{entity.UniqueIdentifier} has been modified/delete by other user");
+                    errors.Add($"{entity.UniqueIdentifier} has been modified/deleted!");
             }
             if (errors.Any())
                 throw new ValidationException(string.Join(", ", errors));

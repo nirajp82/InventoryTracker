@@ -338,3 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/InventoryTracker.API/Properties/ServiceDependencies/InventoryTracker21 - Web Deploy/profile.arm.json
