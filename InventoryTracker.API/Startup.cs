@@ -44,13 +44,14 @@ namespace InventoryTracker.API
                 config.AssumeDefaultVersionWhenUnspecified = true;
                 config.ReportApiVersions = true;
             });
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
-
+            app.UseHealthChecks("/health");
             app.UseRouting();
             app.ConfigureSwaggerMiddleware();
 
